@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Linkedin Fetch</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <!--<script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>-->
+    </head>
+
+    <body>
+        <!--<div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="light" data-type="VERTICAL" data-vanity="ravi95" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/ravi95?trk=profile-badge">Ravi Agarwal</a></div>-->
+
+        <div id="output" style="padding: 12px;"></div>
+
+        <div id="hideBadgeElm" style="display: none;"></div>
+
+        <script>
+            let lkList = ["salman", "ravi95"];
+            let linkedinid = "";
+            let idx = 0;
+            let badgeElm = document.getElementById("hideBadgeElm");
+            let waitObserver;
+
+            getData();
+
+            function getData() {
+                linkedinid = lkList[idx];
+                badgeElm.innerHTML = `<div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="light" data-type="VERTICAL" data-vanity="${linkedinid}" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/${linkedinid}?trk=profile-badge">.</a></div>`;                
+                loadProfileJs();
+            }
+
+            function loadProfileJs() {
+                var script = document.createElement("script");
+                script.onload = function () {
+                    waitObserver = setInterval(domObserve, 1000);
+                };
+                script.src = "https://platform.linkedin.com/badges/js/profile.js";
+                document.head.appendChild(script);
+            }
+
+            function domObserve() {
+                let state = badgeElm.querySelector(".LI-profile-badge .profile-badge__header");
+                if (state) {
+                    clearInterval(waitObserver);
+                    console.log(state);
+                    let json = {
+                        id: linkedinid,
+                        img: "#",
+                        name: "Not available",
+                        title: "Not available",
+                        info: "Not available",
+                    };
+
+                    if (badgeElm.querySelector("img.profile-badge__content-profile-image")) {
+                        json.img = badgeElm.querySelector("img.profile-badge__content-profile-image").src;
+                    }
+
+                    if (badgeElm.querySelector(".profile-badge__content-profile-name")) {
+                        json.name = badgeElm.querySelector(".profile-badge__content-profile-name").innerText;
+                    }
+
+                    if (badgeElm.querySelector(".profile-badge__content-profile-headline")) {
+                        json.title = badgeElm.querySelector(".profile-badge__content-profile-headline").innerText;
+                    }
+
+                    if (badgeElm.querySelector(".profile-badge__content-profile-company-school-info")) {
+                        json.info = badgeElm.querySelector(".profile-badge__content-profile-company-school-info").innerText;
+                    }
+
+                    console.log(json);
+                    showData(json);
+                }
+            }
+
+            function showData(json) {
+                let tbl = "<table><tbody>";
+                for (i in json) tbl += `<tr><td class='col0'>${i}</td><td class='col1'>${json[i]}</td></tr>`;
+                output.innerHTML += tbl + "</tbody></table>";
+                idx++;
+                if (idx < lkList.length) getData();
+            }
+        </script>
+    </body>
+</html>
