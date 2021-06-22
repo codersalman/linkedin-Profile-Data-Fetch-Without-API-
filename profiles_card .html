@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Linkedin Fetch</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <!--<script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>-->
+    </head>
+<style>
+  
+.card {
+	background-color: #fff;
+	height: auto;
+	width: 350px;
+	margin: 10vh auto;	
+	border-radius: 25px;
+	padding-bottom: 1px;
+	box-shadow: 2px 2px 5px #393B45;
+	display:inline-block;
+	margin:12px;
+}
+
+.card .name{
+	color: white;
+	text-align: center;
+	width: 100%;
+	background-color: #E6EBEE;
+	border-radius: 25px 25px 0 0;
+	color: #393B45;
+	padding: 30px 0;
+	font-weight: 800;
+	margin: 0;
+	font-size:32px;
+}
+
+.image-crop {
+	display: block;
+	position: relative;
+	background-color: #E6EBEE;
+	width: 150px;
+	height: 150px;
+	margin: 0 auto;
+	margin-top: 30px;
+	overflow: hidden;
+	border-radius: 50%;
+	box-shadow: 1px 1px 5px #4069E2;
+}
+
+.avatar {
+	display: inline;
+	height: 230px;
+	width: auto;
+	margin-left: -34px;
+}
+
+.title {
+	display: block;
+	margin: 30px auto;
+	width: 280px;
+	font-size:20px;
+	text-align:center;
+	height: auto;
+}
+
+
+.button {
+	display: block;
+	position: relative;
+	padding: 10px 32px;	
+	width:fit-content;
+	margin: auto;
+	margin-bottom: 18px;
+	margin-top: -8px;
+	border-radius: 25px;
+	border: none;
+	font-size: 20px;
+	letter-spacing: 0.2px;
+	font-weight: 500;
+	background-color: #4069E2;
+	color: #E6EBEE;
+}
+
+.button:focus {
+	display: none;
+}
+
+.button:hover {
+	transform: scale(1.03);
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+}
+
+
+
+        .col0{
+            border: 1px solid #c5c5c5;
+            font-size: 16px;
+            padding: 8px 48px;
+            background: #1ed2a8;
+            margin: 6px;
+        }
+
+        .col1{
+            padding: 10px 16px;
+        }
+  
+  </style>
+    <body>
+        <!--<div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="light" data-type="VERTICAL" data-vanity="ravi95" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/ravi95?trk=profile-badge">Ravi Agarwal</a></div>-->
+
+        <div id="output" style="padding: 12px;"></div>
+
+        <div id="hideBadgeElm" style="display: none;"></div>
+
+        <script>
+            let lkList = ["salman", "ravi95"];
+            let linkedinid = "";
+            let idx = 0;
+            let badgeElm = document.getElementById("hideBadgeElm");
+            let waitObserver;
+
+            getData();
+
+            function getData() {
+                linkedinid = lkList[idx];
+                badgeElm.innerHTML = `<div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="light" data-type="VERTICAL" data-vanity="${linkedinid}" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/${linkedinid}?trk=profile-badge">.</a></div>`;                
+                loadProfileJs();
+            }
+
+            function loadProfileJs() {
+                var script = document.createElement("script");
+                script.onload = function () {
+                    waitObserver = setInterval(domObserve, 1000);
+                };
+                script.src = "https://platform.linkedin.com/badges/js/profile.js";
+                document.head.appendChild(script);
+            }
+
+            function domObserve() {
+                let state = badgeElm.querySelector(".LI-profile-badge .profile-badge__header");
+                if (state) {
+                    clearInterval(waitObserver);
+                    console.log(state);
+                    let json = {
+                        id: linkedinid,
+                        img: "#",
+                        name: "Not available",
+                        title: "Not available",
+                        info: "Not available",
+                    };
+
+                    if (badgeElm.querySelector("img.profile-badge__content-profile-image")) {
+                        json.img = badgeElm.querySelector("img.profile-badge__content-profile-image").src;
+                    }
+
+                    if (badgeElm.querySelector(".profile-badge__content-profile-name")) {
+                        json.name = badgeElm.querySelector(".profile-badge__content-profile-name").innerText;
+                    }
+
+                    if (badgeElm.querySelector(".profile-badge__content-profile-headline")) {
+                        json.title = badgeElm.querySelector(".profile-badge__content-profile-headline").innerText;
+                    }
+
+                    if (badgeElm.querySelector(".profile-badge__content-profile-company-school-info")) {
+                        json.info = badgeElm.querySelector(".profile-badge__content-profile-company-school-info").innerText;
+                    }
+
+                    console.log(json);
+                    showData(json);
+                }
+            }
+
+            function showData(json) {
+              
+              let tmp = `<div class="card">
+	<div class='name'>${json.name}</div>
+	<div class="image-crop">
+		<img class="avatar" src="${json.img}"></img>
+	</div>
+	<div class="title">	
+		${json.title}
+	</div>
+	<a href="https://www.linkedin.com/in/${json.id}"><div class="button">
+	 Linkedin Profile
+	</div></a>	
+</div>`;
+              
+               output.innerHTML += tmp;
+              
+                idx++;
+                if (idx < lkList.length) getData();
+            }
+          
+        </script>
+      
+      
+    </body>
+</html>
