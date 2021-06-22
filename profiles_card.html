@@ -9,9 +9,8 @@
         <!--<script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>-->
     </head>
 <style>
-  
 .card {
-	background-color: #fff;
+	background-color: #393B45;
 	height: auto;
 	width: 350px;
 	margin: 10vh auto;	
@@ -104,9 +103,7 @@
 
         .col1{
             padding: 10px 16px;
-        }
-  
-  </style>
+        }<style>
     <body>
         <!--<div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="light" data-type="VERTICAL" data-vanity="ravi95" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/ravi95?trk=profile-badge">Ravi Agarwal</a></div>-->
 
@@ -180,8 +177,8 @@
 		<img class="avatar" src="${json.img}"></img>
 	</div>
 	<div class="title">	
-		${json.title}
-	</div>
+		${json.title.split(',')[0].split('at')[0]}
+	</div>0
 	<a href="https://www.linkedin.com/in/${json.id}"><div class="button">
 	 Linkedin Profile
 	</div></a>	
@@ -192,7 +189,6 @@
                 idx++;
                 if (idx < lkList.length) getData();
             }
-          
         </script>
       
       
